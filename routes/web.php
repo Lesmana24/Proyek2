@@ -1,0 +1,24 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PenggunaController;
+use App\Http\Controllers\LoginController;
+Route::get('/', function () {
+    $title = 'Selamat Datang';
+    $slug = 'welcome';
+    return view('konten.welcome', compact('title', 'slug'));
+});
+Route::get('/daftar', [PenggunaController::class, 'create'])
+     ->name('daftar');
+
+// terima submit form
+Route::post('/daftar', [PenggunaController::class, 'store']);
+
+// login
+Route::get ('/login',  [LoginController::class, 'create'])->name('login');
+Route::post('/login',  [LoginController::class, 'store']);
+
+// logout (opsional, bisa POST via form)
+Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+
+

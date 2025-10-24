@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
-    <link rel="icon" href="">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" ...>
-
+    <link rel="shortcut icon" href="{{ asset('image/logo.png') }} "type="image/x-icon">
     @stack('page-styles')
 
 </head>

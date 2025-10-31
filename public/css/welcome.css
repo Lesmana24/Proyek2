@@ -26,19 +26,18 @@ body {
 .judul {
     max-width: 500px;
     width: 100%;
+    position: relative; /* Tambahkan properti position */
+    z-index: 20;
 }
 
 h1 {
-    color: #45842E;
-    /* Gunakan 'vw' yang lebih kecil untuk mobile, 
-      ini akan jadi ~47px di layar 360px.
-      Jauh lebih baik dari 50vw.
-    */
-    font-size: 13vw; 
-    line-height: 1.2;
-    font-weight: bold;
-    margin: 0; /* Hapus margin aneh di mobile */
-    text-align: center; /* Center teks di mobile */
+    color: #45842E; /* Ganti menjadi putih */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Tambahkan efek bayangan */
+  font-size: 13vw; 
+  line-height: 1.2;
+  font-weight: bold;
+  margin: 0; /* Hapus margin aneh di mobile */
+  text-align: center;
 }
 
 .button-group {
@@ -75,12 +74,14 @@ h1 {
     background-color: #45842E;
     color: white;
     border: 1px solid #45842E;
+    z-index: 10;
 }
 
 .daftar {
     background-color: white;
     color: #45842E;
     border: 1px solid #45842E;
+    z-index: 10;
 }
 
 .masuk:hover {
@@ -98,7 +99,7 @@ h1 {
     */
     width: 250px; 
     height: auto;
-    z-index: 5; /* Di belakang konten (z-index: 10) */
+    z-index: 0; /* Di belakang konten (z-index: 10) */
 }
 
 .kiri {

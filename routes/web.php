@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\HomeController;
 Route::get('/', function () {
     $title = 'Selamat Datang';
     $slug = 'welcome';
@@ -20,5 +21,9 @@ Route::post('/login',  [LoginController::class, 'store']);
 
 // logout (opsional, bisa POST via form)
 Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+
+Route::middleware('auth:pengguna')->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+});
 
 

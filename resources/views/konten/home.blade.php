@@ -15,7 +15,7 @@
         <button type="submit" class="logout">Log Out</button>
     </form>
     <div class="notif">
-        <a href="#"><img src="{{ asset('image/notif.svg') }}" alt="Notifikasi"/></a>
+        <a href="{{ url('/notification') }}"><img src="{{ asset('image/notif.svg') }}" alt="Notifikasi"/></a>
     </div>
 </div>
 

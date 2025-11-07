@@ -23,14 +23,14 @@
 
 <div class="card">
     <div class="logo-circle">
-        <img src="{{ asset('image/logo.png') }}" alt="Logo" />
+        <img src="{{ asset('image/logo copy.png') }}" alt="Logo" />
     </div>
 
     <div class="status">
-        <div class="status-box">
+        <div class="status-box"><a href="{{ url('/suhu') }}">
             <h2>24°</h2>
             <p>Pengaturan Suhu</p>
-        </div>
+        </a></div>
         <div class="status-box">
             <h2>60%</h2>
             <p>Kelembaban</p>
@@ -44,10 +44,9 @@
             <img class="time-icon" src="{{ asset('image/jam.svg') }}" alt="jam"/>
         </div>
         <button class="btn-set">Set Jadwal</button>
-    </div>
-
-    <img class="leaf left" src="{{ asset('image/daun.png') }}" alt="leaf" />
+        <img class="leaf left" src="{{ asset('image/daun.png') }}" alt="leaf" />
     <img class="leaf right" src="{{ asset('image/daun.png') }}" alt="leaf" />
+    </div>
 </div>
 @endsection
 

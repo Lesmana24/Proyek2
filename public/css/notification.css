@@ -17,7 +17,7 @@ body {
   background: #ffffff80;
   border-radius: 20px;
   padding: 30px;
-  width: 400px;
+  width: 65%;
   text-align: center;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
@@ -50,6 +50,7 @@ body {
   background-color: #45842E;
   color: white;
   border-radius: 25px;
+  width: 100%;
   padding: 12px 18px;
   display: flex;
   justify-content: space-between;

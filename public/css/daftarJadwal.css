@@ -1,0 +1,416 @@
+/* === GLOBAL === */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(circle at center, #b2f580 10%, #e0f8e0 50%, #F0F0F0 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+/* === NAVBAR === */
+.navbar {
+  position: absolute;
+  top: 40px;
+  left: 50px;
+  right: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logout {
+  background-color: #45842E;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 20px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.logout:hover {
+  background-color: #5d9e45;
+}
+
+.notif {
+  background-color: white;
+  box-shadow: 0 0px 20px rgba(0,0,0,0.2);
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.notif:hover {
+  transform: scale(1.1);
+}
+
+.notif img {
+  width: 25px;
+  height: 25px;
+  margin-top: 4px;
+}
+
+/* === TITLE === */
+h1 {
+  margin-top: 40%;
+  font-size: 90px;
+  color: #45842E;
+  margin-right: 40%;
+  margin-bottom: 150px;
+  text-align: left;
+}
+
+/* === MAIN CONTAINER === */
+.logo {
+  background: white;
+  border-top-left-radius: 100px;
+  border-top-right-radius: 100px;
+  box-shadow: 0 0px 15px rgba(0,0,0,0.2);
+  padding: 30px;
+  width: 1000px;
+  margin-top: 80px;
+  position: relative;
+  text-align: center;
+}
+
+.logo-circle {
+  background: white;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.logo-circle img {
+  width: 300px;
+  height: 300px;
+}
+
+/* === BACK BUTTON === */
+.back-button {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  z-index: 40;
+}
+
+.back-arrow {
+  width: 64px;
+  height: 64px;
+  padding: 6px;
+  border-radius: 50%;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+.back-arrow img {
+  width: 44px;
+  height: 44px;
+}
+
+/* === CARD === */
+.card {
+  position: relative;
+  background: white;
+  border-radius: 20px;
+  margin-top: 100px;
+  padding: 30px 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  height: 60vh;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(40px);
+  display: flex;
+  flex-direction: column;
+}
+
+.animate-card {
+  animation: slideUp 0.8s ease-out forwards;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideOut {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(100%); }
+}
+
+/* === CARD HEADER === */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 50px 20px;
+  margin-top: -100px;
+}
+
+.card-header h3 {
+  margin: 0;
+  padding-top: 100px;
+  color: #3d8c3a;
+  font-weight: 600;
+  font-size: 30px;
+}
+
+.menu-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-toggle.active {
+  transform: rotate(90deg);
+}
+
+.menu-icon {
+  width: 18px;
+  height: 18px;
+  color: #3d8c3a;
+  margin-top: 80px;
+}
+
+/* === SCHEDULE LIST === */
+.schedule-list {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 35vh;
+  overflow-y: auto;
+  padding-right: 10px;
+  flex: 1;
+}
+
+/* Scrollbar */
+.schedule-list::-webkit-scrollbar { width: 8px; }
+.schedule-list::-webkit-scrollbar-thumb {
+  background: rgba(69,132,46,0.4);
+  border-radius: 6px;
+}
+
+/* === SCHEDULE ITEM === */
+.schedule-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 15px;
+  padding: 15px 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  margin: 0 50px;
+  border: 1px solid #f0f0f0;
+  position: relative;
+  transition: 0.3s;
+}
+
+.schedule-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+
+.schedule-item.selected {
+  background: #ffe6e6;
+  border-color: red;
+}
+
+/* === TOMBOL DELETE  === */
+.action-btn {
+  display: none;
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ff4d4d;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: white;
+  font-weight: bold;
+}
+
+/* Icon X */
+.schedule-item.delete-mode .action-btn::after {
+  content: "";
+}
+
+/* Item geser saat delete mode */
+.schedule-item.delete-mode {
+  padding-left: 60px;
+}
+
+/* Selected → hijau centang */
+.schedule-item.selected .action-btn {
+  background: #0fa958;
+}
+
+.schedule-item.selected .action-btn::after {
+  content: "✓";
+  font-size: 16px;
+}
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.popup-box {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.popup-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.popup-btn.cancel {
+    background: #ccc;
+}
+
+.popup-btn.delete {
+    background: #ff4d4d;
+    color: white;
+}
+
+/* === INFO === */
+.schedule-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.schedule-info img {
+  width: 35px;
+  height: 35px;
+}
+
+.schedule-info h4 {
+  font-size: 16px;
+  color: #3d8c3a;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.schedule-info p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+/* === BUTTON SET === */
+.set-btn {
+  background: #3d8c3a;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 25px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.set-btn:hover {
+  background: #2f6d2b;
+}
+
+/* === LEAVES DECOR === */
+.leaf {
+  position: absolute;
+  width: 30%;
+  opacity: 0.95;
+}
+
+.leaf.left {
+  left: -250px;
+  bottom: 10px;
+  transform: rotate(-2deg);
+}
+
+.leaf.right {
+  right: -250px;
+  bottom: 50%;
+  transform: rotate(-85deg);
+}
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.popup-box {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.popup-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.popup-btn.cancel {
+    background: #ccc;
+}
+
+.popup-btn.delete {
+    background: #ff4d4d;
+    color: white;
+}

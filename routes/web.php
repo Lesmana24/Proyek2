@@ -30,3 +30,7 @@ Route::middleware('auth:pengguna')->group(function () {
 Route::middleware('auth:pengguna')->group(function () {
 Route::get('/notification', [NotificationController::class, 'index']);
 } );
+
+Route::get('/daftarJadwal',function(){
+    return view('konten.daftarJadwal');
+})->name('daftarJadwal');

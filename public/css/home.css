@@ -116,10 +116,23 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
-.status-box:hover {
-  border: 1px solid #45842E;
+.settings-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 24px;
+    height: 24px;
+    fill: #a5d6a7; /* Warna hijau muda */
+    cursor: pointer;
+    transition: fill 0.3s ease, transform 0.2s ease;
+}
+
+.settings-icon:hover {
+    fill: #45842E; /* Warna hijau tua saat di-hover */
+    transform: rotate(30deg); /* Efek sedikit berputar saat di-hover */
 }
 
 .status-box h2 {
@@ -211,7 +224,7 @@ h1 {
 }
 
 .leaf.right {
-  bottom: 60%;
+  bottom: 70px;
   right: -200px;
   width: 280px;
   transform: rotate(-85deg);
@@ -357,4 +370,196 @@ h1 {
     padding: 12px 24px;
     font-size: 15px;
   }
+}
+
+/* =========================================
+   1. CSS UNTUK TOMBOL IKON (GEAR)
+   ========================================= */
+.status-box {
+    /* Pastikan ini ada agar ikon bisa diposisikan di pojok */
+    position: relative; 
+}
+
+.settings-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 24px;  /* PENTING: Agar ikon punya ukuran */
+    height: 24px; /* PENTING: Agar ikon punya ukuran */
+    fill: #a5d6a7;
+    cursor: pointer;
+    z-index: 10; /* Agar ikon berada di atas background */
+    transition: all 0.3s ease;
+}
+
+.settings-icon:hover {
+    fill: #45842E;
+    transform: rotate(30deg);
+}
+
+/* =========================================
+   2. CSS UNTUK POPUP (MODAL)
+   ========================================= */
+.modal-overlay {
+    display: none; /* Wajib hidden saat awal */
+    position: fixed; /* Wajib fixed agar mengambang */
+    z-index: 9999; /* Angka tinggi agar muncul paling depan */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Latar gelap transparan */
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(2px);
+}
+
+.modal-card {
+    background-color: white;
+    padding: 30px;
+    border-radius: 30px;
+    width: 90%;
+    max-width: 350px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: popUp 0.3s ease-out;
+    position: relative;
+}
+
+@keyframes popUp {
+    from {transform: scale(0.8); opacity: 0;}
+    to {transform: scale(1); opacity: 1;}
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    color: #45842E;
+    font-size: 28px;
+    margin: 0;
+    font-weight: bold;
+}
+
+.close-btn {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #45842E;
+}
+
+.modal-line {
+    border: 0;
+    height: 1px;
+    background: #ddd;
+    margin: 15px 0 30px 0;
+}
+
+.counter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.btn-counter {
+    background: none;
+    border: none;
+    color: #45842E;
+    font-size: 40px;
+    cursor: pointer;
+    width: 50px;
+}
+
+.value-display {
+    font-size: 48px;
+    color: #45842E;
+    font-weight: bold;
+    position: relative;
+    min-width: 80px;
+}
+
+.unit-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #b2f580;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    right: -15px;
+}
+
+.modal-btn {
+    width: 100%;
+    margin: 0;
+    padding: 14px 0;
+}
+
+.realtime-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px; /* Tinggi area header */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px; /* Jarak dari pinggir kiri/kanan */
+    box-sizing: border-box;
+    pointer-events: none; /* Agar tidak menghalangi klik logo jika overlap */
+}
+
+.rt-box {
+    text-align: center;
+    margin-top: 15px; /* Sedikit jarak dari atas kartu */
+    width: 120px;     /* Lebar area teks agar rapi */
+    pointer-events: auto;
+}
+
+/* Angka Besar (29° / 75%) */
+.rt-box h3 {
+    font-size: 36px;
+    color: #45842E;
+    margin: 0;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* Tulisan Kecil (Suhu Saat Ini) */
+.rt-box p {
+    font-size: 12px;
+    color: #88b37a; /* Hijau agak abu agar beda dengan judul utama */
+    margin: 5px 0 0 0;
+    font-weight: 600;
+}
+
+/* Penyesuaian Responsive (HP)
+   Agar teks tidak bertabrakan dengan logo di layar kecil
+*/
+@media (max-width: 480px) {
+    .realtime-header {
+        padding: 0 15px;
+    }
+    
+    .rt-box {
+        width: auto; /* Biarkan lebar menyesuaikan konten */
+    }
+
+    .rt-box h3 {
+        font-size: 24px; /* Perkecil sedikit di HP */
+    }
+    
+    .rt-box p {
+        font-size: 10px;
+        max-width: 70px; /* Bungkus teks jika terlalu panjang */
+        line-height: 1.2;
+    }
 }

@@ -34,3 +34,7 @@ Route::get('/notification', [NotificationController::class, 'index']);
 Route::get('/suhu',function(){
     return view('konten.suhu');
 });
+
+Route::get('/daftarJadwal',function(){
+    return view('konten.daftarJadwal');
+})->name('daftarJadwal');

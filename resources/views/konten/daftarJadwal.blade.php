@@ -2,6 +2,7 @@
 
 @push('page-styles')
 <link rel="stylesheet" href="{{ asset('css/daftarJadwal.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 @endpush
 
 @section('content')
@@ -109,10 +110,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let deleteMode = false;
 
-    // === 1. Toggle Delete Mode ===
+    // === TOGGLE MODE DELETE ===
     menuToggle.addEventListener("click", () => {
 
-        // Jika trash diklik saat deleteMode ON → tampilkan popup
+        // Jika sedang delete mode & klik lagi → cek sudah pilih item atau belum
         if (deleteMode) {
             const selected = document.querySelectorAll(".schedule-item.selected");
             if (selected.length > 0) {
@@ -121,6 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
+        // Toggle mode
         deleteMode = !deleteMode;
 
         menuIcon.classList.toggle("fa-bars", !deleteMode);
@@ -142,22 +144,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // === 2. Pilih item yang akan dihapus ===
+    // === SELECT ITEM ===
     scheduleList.addEventListener("click", e => {
         if (!e.target.classList.contains("action-btn")) return;
 
         const item = e.target.closest(".schedule-item");
-        if (deleteMode) {
-            item.classList.toggle("selected");
-        }
+        item.classList.toggle("selected");
     });
 
-    // === 3. BATAL HAPUS ===
+    // === BATAL ===
     cancelDelete.addEventListener("click", () => {
         popup.style.display = "none";
     });
 
-    // === 4. KONFIRMASI HAPUS ===
+    // === KONFIRMASI HAPUS ===
     confirmDelete.addEventListener("click", () => {
         const selectedItems = document.querySelectorAll(".schedule-item.selected");
 
@@ -167,19 +167,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         popup.style.display = "none";
-
-        // Reset mode
         deleteMode = false;
+
         menuIcon.classList.remove("fa-trash");
         menuIcon.classList.add("fa-bars");
 
         document.querySelectorAll(".schedule-item").forEach(item => {
-            const actionBtn = item.querySelector(".action-btn");
-            const setBtn = item.querySelector(".set-btn");
-
             item.classList.remove("delete-mode", "selected");
-            actionBtn.style.display = "none";
-            setBtn.style.display = "block";
+            item.querySelector(".action-btn").style.display = "none";
+            item.querySelector(".set-btn").style.display = "block";
         });
     });
 

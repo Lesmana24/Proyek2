@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Setting;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +14,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        
+        Setting::create([
+            'key' => 'batas_suhu',
+            'value' => '24'
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        Setting::create([
+            'key' => 'batas_lembab',
+            'value' => '60'
         ]);
     }
 }

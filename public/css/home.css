@@ -230,6 +230,29 @@ h1 {
   transform: rotate(-85deg);
 }
 
+.mqtt-status-container {
+    position: absolute;
+    /* Hitungan: Logo circle keluar 80px, sisa 80px di dalam. 
+       Kita taruh di 95px agar ada jarak sedikit dari bawah logo */
+    top: 95px; 
+    left: 50%;
+    transform: translateX(-50%); /* Trik agar pas di tengah horizontal */
+    font-size: 12px;
+    color: #888;
+    width: 100%;
+    text-align: center;
+    z-index: 4; /* Di bawah logo (z-5) tapi di atas card */
+}
+
+/* Penyesuaian Mobile (HP) */
+@media (max-width: 480px) {
+    .mqtt-status-container {
+        /* Karena logo di HP lebih kecil, posisinya kita naikkan */
+        top: 65px; 
+        font-size: 10px;
+    }
+}
+
 /* Tablet */
 @media (max-width: 768px) {
   h1 {

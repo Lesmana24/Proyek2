@@ -34,3 +34,5 @@ Route::get('/notification', [NotificationController::class, 'index']);
 Route::get('/daftarJadwal',function(){
     return view('konten.daftarJadwal');
 })->name('daftarJadwal');
+
+Route::post('/update-setting', [HomeController::class, 'updateSettings'])->name('update.setting');

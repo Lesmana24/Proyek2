@@ -27,12 +27,18 @@
     </div>
     <div class="realtime-header">
         <div class="rt-box left">
-            <h3>29°</h3> <p>Suhu Saat Ini</p>
+            <h3><span id="live-suhu">--</span>°</h3> 
+            <p>Suhu Saat Ini</p>
         </div>
 
         <div class="rt-box right">
-            <h3>75%</h3> <p>Kelembapan Saat Ini</p>
+            <h3><span id="live-lembab">--</span>%</h3> 
+            <p>Kelembapan Saat Ini</p>
         </div>
+    </div>
+    
+    <div class="mqtt-status-container">
+        Status MQTT: <span id="mqtt-status" style="font-weight: bold; color: orange;">Menghubungkan...</span>
     </div>
     <div class="status">
         <div class="status-box">
@@ -42,7 +48,7 @@
                 </svg>
             </div>
             
-            <h2 id="display-suhu">24°</h2>
+            <h2 id="display-suhu">{{ $batasSuhu }}°</h2>
             <p>Batas Ambang Suhu</p>
         </div>
 
@@ -53,7 +59,7 @@
                 </svg>
             </div>
 
-            <h2 id="display-kelembapan">60%</h2>
+            <h2 id="display-kelembapan">{{ $batasLembab }}%</h2>
             <p>Batas Ambang Kelembapan</p>
         </div>
     </div>
@@ -100,11 +106,100 @@
     </div>
 </div>
 
+{{-- ================= SCRIPT MQTT (PAHO) ================= --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+
+<script>
+    // --- 1. Konfigurasi Koneksi ---
+    const mqtt_broker = "broker.emqx.io";
+    const mqtt_port   = 8084; // Port WSS (WebSocket Secure)
+    const client_id   = "Web_PakJondol_" + Math.random().toString(16).substr(2, 8);
+
+    // Topik (Harus SAMA PERSIS dengan kode ESP32)
+    const topic_suhu   = "Proyek2/monitoring/suhu";
+    const topic_lembab = "Proyek2/monitoring/lembab";
+
+    // --- 2. Inisialisasi Client ---
+    const client = new Paho.MQTT.Client(mqtt_broker, mqtt_port, client_id);
+
+    // Setup Handler
+    client.onConnectionLost = onConnectionLost;
+    client.onMessageArrived = onMessageArrived;
+
+    // --- 3. Mulai Koneksi ---
+    console.log("Menghubungkan ke MQTT...");
+    client.connect({
+        useSSL: true, // Wajib true untuk port 8084
+        onSuccess: onConnect,
+        onFailure: onFailure
+    });
+
+    // --- Fungsi Callback ---
+
+    // Jika Berhasil Konek
+    function onConnect() {
+        console.log("MQTT Terhubung!");
+        document.getElementById("mqtt-status").innerText = "Terhubung";
+        document.getElementById("mqtt-status").style.color = "green";
+
+        // Subscribe ke topik
+        client.subscribe(topic_suhu);
+        client.subscribe(topic_lembab);
+
+        // --- BARU: Pancing ESP32 dengan nilai terakhir ---
+        let savedSuhu = localStorage.getItem('saved_batas_suhu');
+        let savedLembab = localStorage.getItem('saved_batas_lembab');
+
+        if(savedSuhu) {
+            let msg = new Paho.MQTT.Message(savedSuhu);
+            msg.destinationName = "Proyek2/kontrol/batas_suhu";
+            client.send(msg);
+        }
+        if(savedLembab) {
+            let msg = new Paho.MQTT.Message(savedLembab);
+            msg.destinationName = "Proyek2/kontrol/batas_lembab";
+            client.send(msg);
+        }
+    }
+
+    // Jika Gagal Konek
+    function onFailure(responseObject) {
+        console.log("Gagal Konek: " + responseObject.errorMessage);
+        document.getElementById("mqtt-status").innerText = "Gagal (Coba Refresh)";
+        document.getElementById("mqtt-status").style.color = "red";
+    }
+
+    // Jika Koneksi Putus Tiba-tiba
+    function onConnectionLost(responseObject) {
+        if (responseObject.errorCode !== 0) {
+            console.log("Koneksi Putus: " + responseObject.errorMessage);
+            document.getElementById("mqtt-status").innerText = "Terputus";
+            document.getElementById("mqtt-status").style.color = "red";
+        }
+    }
+
+    // --- INI BAGIAN PENTING: Saat Data Masuk ---
+    function onMessageArrived(message) {
+        console.log("Topik: " + message.destinationName + " | Pesan: " + message.payloadString);
+
+        // Cek topik mana yang masuk, lalu update HTML
+        if (message.destinationName === topic_suhu) {
+            // Update angka suhu
+            document.getElementById("live-suhu").innerText = message.payloadString;
+        } 
+        else if (message.destinationName === topic_lembab) {
+            // Update angka kelembaban
+            document.getElementById("live-lembab").innerText = message.payloadString;
+        }
+    }
+    
+</script>
 {{-- ================= SCRIPT LANGSUNG DI SINI ================= --}}
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
     // Definisi Fungsi SECARA GLOBAL (window.)
-    window.openThresholdModal = function(type, value, unit) {
+    // Definisi Fungsi SECARA GLOBAL (window.)
+    window.openThresholdModal = function(type, value, unit) { // 'value' disini sudah tidak kita pakai
         console.log('Klik terdeteksi:', type);
         
         var modal = document.getElementById('thresholdModal');
@@ -113,7 +208,20 @@
         
         // Update data global
         window.currentType = type;
-        window.currentValue = parseInt(value);
+
+        // === BAGIAN INI YANG BERUBAH ===
+        // Ambil angka aktual dari teks di layar (yang sudah dimuat dari database)
+        if (type === 'Suhu') {
+             // Ambil teks dari id="display-suhu" (misal "35°")
+             let valText = document.getElementById('display-suhu').innerText;
+             // parseInt otomatis membuang karakter non-angka seperti "°"
+             window.currentValue = parseInt(valText); 
+        } else {
+             // Ambil teks dari id="display-kelembapan" (misal "60%")
+             let valText = document.getElementById('display-kelembapan').innerText;
+             window.currentValue = parseInt(valText);
+        }
+        // ===============================
         
         title.innerText = type;
         valSpan.innerText = window.currentValue;
@@ -132,11 +240,55 @@
     };
 
     window.saveThreshold = function() {
+        // 1. Validasi Koneksi MQTT
+        if (!client.isConnected()) {
+            alert("MQTT belum terhubung! Tunggu sebentar...");
+            return;
+        }
+
+        let topic = "";
+        let dbKey = ""; // Key untuk database
+        let messagePayload = String(window.currentValue);
+
         if(window.currentType === 'Suhu') {
             document.getElementById('display-suhu').innerText = window.currentValue + '°';
+            topic = "Proyek2/kontrol/batas_suhu";
+            dbKey = "batas_suhu"; // Sesuai database
         } else {
             document.getElementById('display-kelembapan').innerText = window.currentValue + '%';
+            topic = "Proyek2/kontrol/batas_lembab";
+            dbKey = "batas_lembab"; // Sesuai database
         }
+
+        // 2. KIRIM KE MQTT (Untuk Alat)
+        var message = new Paho.MQTT.Message(messagePayload);
+        message.destinationName = topic;
+        message.qos = 2;       // Pastikan terkirim (Exactly Once)
+        message.retained = true; // Simpan pesan terakhir di broker
+        client.send(message);
+
+        // 3. KIRIM KE DATABASE (Untuk Server Laravel) -- BARU!!
+        fetch('/update-setting', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Ambil token CSRF dari head
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                key: dbKey,
+                value: window.currentValue
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Sukses update database:", data);
+        })
+        .catch((error) => {
+            console.error('Error update database:', error);
+        });
+        
+        console.log("Mengirim batas baru: " + messagePayload + " ke " + topic);
         window.closeModal();
     };
 

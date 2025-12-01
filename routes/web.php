@@ -36,3 +36,4 @@ Route::get('/daftarJadwal',function(){
 })->name('daftarJadwal');
 
 Route::post('/update-setting', [HomeController::class, 'updateSettings'])->name('update.setting');
+Route::post('/simpan-notif', [NotificationController::class, 'storeLog']);

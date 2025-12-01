@@ -24,5 +24,15 @@ class DatabaseSeeder extends Seeder
             'key' => 'batas_lembab',
             'value' => '60'
         ]);
+
+        Setting::create([
+            'key' => 'jadwal_hari', 
+            'value' => '0,0,0,0,0,0,0'
+        ]);
+
+        Setting::create([
+            'key' => 'jadwal_jam',  
+            'value' => '07:00'
+        ]);
     }
 }

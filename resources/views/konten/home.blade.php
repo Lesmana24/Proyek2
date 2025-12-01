@@ -66,11 +66,37 @@
 
     <div class="schedule">
         <h3>Jadwal Otomatis</h3>
+        
+        <div class="day-selector">
+            <div class="day-item">
+                <input type="checkbox" id="hari-0" value="0" {{ $arrayHari[0] == '1' ? 'checked' : '' }}><br>Min
+            </div>
+            <div class="day-item">
+                <input type="checkbox" id="hari-1" value="1" {{ $arrayHari[1] == '1' ? 'checked' : '' }}><br>Sen
+            </div>
+            <div class="day-item">
+                <input type="checkbox" id="hari-2" value="2" {{ $arrayHari[2] == '1' ? 'checked' : '' }}><br>Sel
+            </div>
+            <div class="day-item">
+                <input type="checkbox" id="hari-3" value="3" {{ $arrayHari[3] == '1' ? 'checked' : '' }}><br>Rab
+            </div>
+            <div class="day-item">
+                <input type="checkbox" id="hari-4" value="4" {{ $arrayHari[4] == '1' ? 'checked' : '' }}><br>Kam
+            </div>
+            <div class="day-item">
+                <input type="checkbox" id="hari-5" value="5" {{ $arrayHari[5] == '1' ? 'checked' : '' }}><br>Jum
+            </div>
+            <div class="day-item">
+                <input type="checkbox" id="hari-6" value="6" {{ $arrayHari[6] == '1' ? 'checked' : '' }}><br>Sab
+            </div>
+        </div>
+
         <div class="time-container">
-            <input type="text" id="customTime" placeholder="10:30">
+            <input type="text" id="customTime" placeholder="10:30" value="{{ $jadwalJam }}">
             <img class="time-icon" src="{{ asset('image/jam.svg') }}" alt="jam"/>
         </div>
-        <button class="btn-set">Set Jadwal</button>
+        
+        <button class="btn-set" onclick="kirimJadwal()">Simpan Jadwal</button>
     </div>
 
     <img class="leaf left" src="{{ asset('image/daun.png') }}" alt="leaf" />
@@ -109,90 +135,123 @@
 {{-- ================= SCRIPT MQTT (PAHO) ================= --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
 
+{{-- ================= SCRIPT MQTT (PAHO) ================= --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+
 <script>
     // --- 1. Konfigurasi Koneksi ---
     const mqtt_broker = "broker.emqx.io";
-    const mqtt_port   = 8084; // Port WSS (WebSocket Secure)
+    const mqtt_port   = 8084;
     const client_id   = "Web_PakJondol_" + Math.random().toString(16).substr(2, 8);
 
-    // Topik (Harus SAMA PERSIS dengan kode ESP32)
     const topic_suhu   = "Proyek2/monitoring/suhu";
     const topic_lembab = "Proyek2/monitoring/lembab";
+
+    // VARIABEL TIMER (Wajib di luar fungsi)
+    let watchdogTimer = null; 
 
     // --- 2. Inisialisasi Client ---
     const client = new Paho.MQTT.Client(mqtt_broker, mqtt_port, client_id);
 
-    // Setup Handler
     client.onConnectionLost = onConnectionLost;
     client.onMessageArrived = onMessageArrived;
 
     // --- 3. Mulai Koneksi ---
     console.log("Menghubungkan ke MQTT...");
     client.connect({
-        useSSL: true, // Wajib true untuk port 8084
+        useSSL: true,
         onSuccess: onConnect,
         onFailure: onFailure
     });
 
-    // --- Fungsi Callback ---
+    // ================= FUNGSI UTAMA =================
 
-    // Jika Berhasil Konek
     function onConnect() {
-        console.log("MQTT Terhubung!");
-        document.getElementById("mqtt-status").innerText = "Terhubung";
-        document.getElementById("mqtt-status").style.color = "green";
+        console.log("MQTT Terhubung ke Broker!");
+        
+        document.getElementById("mqtt-status").innerText = "Menunggu Data Alat...";
+        document.getElementById("mqtt-status").style.color = "orange"; 
 
-        // Subscribe ke topik
+        // Subscribe
         client.subscribe(topic_suhu);
         client.subscribe(topic_lembab);
 
-        // --- BARU: Pancing ESP32 dengan nilai terakhir ---
-        let savedSuhu = localStorage.getItem('saved_batas_suhu');
-        let savedLembab = localStorage.getItem('saved_batas_lembab');
+        let dbSuhu = document.getElementById("display-suhu").innerText.replace('°', '');
+        let dbLembab = document.getElementById("display-kelembapan").innerText.replace('%', '');
 
-        if(savedSuhu) {
-            let msg = new Paho.MQTT.Message(savedSuhu);
+        console.log("Sinkronisasi Awal: Mengirim data DB ke Alat (" + dbSuhu + " & " + dbLembab + ")");
+
+        if(dbSuhu) {
+            let msg = new Paho.MQTT.Message(dbSuhu);
             msg.destinationName = "Proyek2/kontrol/batas_suhu";
+            msg.retained = true;
             client.send(msg);
         }
-        if(savedLembab) {
-            let msg = new Paho.MQTT.Message(savedLembab);
+        if(dbLembab) {
+            let msg = new Paho.MQTT.Message(dbLembab);
             msg.destinationName = "Proyek2/kontrol/batas_lembab";
+            msg.retained = true;
             client.send(msg);
         }
     }
 
-    // Jika Gagal Konek
     function onFailure(responseObject) {
         console.log("Gagal Konek: " + responseObject.errorMessage);
-        document.getElementById("mqtt-status").innerText = "Gagal (Coba Refresh)";
+        document.getElementById("mqtt-status").innerText = "Gagal Konek Server";
         document.getElementById("mqtt-status").style.color = "red";
     }
 
-    // Jika Koneksi Putus Tiba-tiba
     function onConnectionLost(responseObject) {
         if (responseObject.errorCode !== 0) {
             console.log("Koneksi Putus: " + responseObject.errorMessage);
-            document.getElementById("mqtt-status").innerText = "Terputus";
+            document.getElementById("mqtt-status").innerText = "Koneksi Server Putus";
             document.getElementById("mqtt-status").style.color = "red";
         }
     }
 
-    // --- INI BAGIAN PENTING: Saat Data Masuk ---
+    // --- SAAT DATA MASUK DARI ALAT ---
     function onMessageArrived(message) {
-        console.log("Topik: " + message.destinationName + " | Pesan: " + message.payloadString);
+        console.log("Pesan Masuk: " + message.payloadString);
 
-        // Cek topik mana yang masuk, lalu update HTML
+        // 1. PANGGIL FUNGSI DETEKSI ONLINE (Reset Timer)
+        resetWatchdog(); 
+
+        // 2. Update Tampilan Angka
         if (message.destinationName === topic_suhu) {
-            // Update angka suhu
             document.getElementById("live-suhu").innerText = message.payloadString;
         } 
         else if (message.destinationName === topic_lembab) {
-            // Update angka kelembaban
             document.getElementById("live-lembab").innerText = message.payloadString;
         }
     }
-    
+
+    // --- LOGIKA DETEKSI OFFLINE (WATCHDOG) ---
+    function resetWatchdog() {
+        const statusElem = document.getElementById("mqtt-status");
+
+        // A. Karena fungsi ini dipanggil, berarti BARU SAJA ada data masuk -> ALAT ONLINE
+        statusElem.innerText = "Perangkat ONLINE";
+        statusElem.style.color = "green"; // Hijau
+        statusElem.style.fontWeight = "bold";
+
+        // B. Hapus timer lama (jika ada) agar tidak menghitung mundur dobel
+        if (watchdogTimer) {
+            clearTimeout(watchdogTimer);
+        }
+
+        // C. Pasang Timer Baru (Bom waktu 10 detik)
+        watchdogTimer = setTimeout(function() {
+            // Jika kode di dalam sini jalan, berarti sudah 10 detik HENING (gak ada data)
+            statusElem.innerText = "Perangkat OFFLINE";
+            statusElem.style.color = "red"; // Merah
+            
+            // Ubah angka jadi strip
+            document.getElementById("live-suhu").innerText = "--";
+            document.getElementById("live-lembab").innerText = "--";
+            
+            console.log("Timeout! Perangkat dianggap mati.");
+        }, 10000); // 10 detik
+    }
 </script>
 {{-- ================= SCRIPT LANGSUNG DI SINI ================= --}}
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -292,6 +351,73 @@
         window.closeModal();
     };
 
+    // --- FUNGSI KIRIM JADWAL MINGGUAN ---
+    window.kirimJadwal = function() {
+        // 1. Validasi Koneksi
+        if (!client.isConnected()) {
+            alert("MQTT belum terhubung! Tunggu sebentar...");
+            return;
+        }
+
+        // 2. Ambil Jam dari Input
+        var waktu = document.getElementById("customTime").value;
+        if (waktu === "") { alert("Pilih jam dulu!"); return; }
+
+        // 3. Ambil Status Centang Hari (Minggu=0 s.d Sabtu=6)
+        // Kita buat array, misal: ["0", "1", "0", "1", "0", "0", "0"]
+        let polaHari = [];
+        let adaHariDipilih = false;
+        for (let i = 0; i <= 6; i++) {
+            let isChecked = document.getElementById("hari-" + i).checked;
+            if(isChecked) adaHariDipilih = true;
+            polaHari.push(isChecked ? "1" : "0");
+        }
+
+        if (!adaHariDipilih) {
+            alert("Silakan pilih minimal satu hari!");
+            return;
+        }
+
+        // 4. Susun Format Pesan: "0,1,0,1,0,0,0#08:00"
+        let stringHari = polaHari.join(","); 
+        let payload = stringHari + "#" + waktu;
+        let topicJadwal = "Proyek2/kontrol/jadwal_mingguan";
+
+        // 5. Kirim ke MQTT
+        var message = new Paho.MQTT.Message(payload);
+        message.destinationName = topicJadwal;
+        message.qos = 2;       // Wajib sampai
+        message.retained = true; // Simpan di broker
+        client.send(message);
+
+        // 5. KIRIM KE DATABASE (SERVER) - BARU!!
+        // Kita simpan dua kali: satu untuk pola hari, satu untuk jam
+        simpanKeDB('jadwal_hari', stringHari);
+        simpanKeDB('jadwal_jam', waktu);
+
+        console.log("Mengirim Jadwal: " + payload);
+        alert("Jadwal Berhasil Disimpan: " + waktu);
+        
+        // Catatan: Jika ingin disimpan ke Database Laravel juga,
+        // tambahkan kode fetch() di sini mirip fungsi saveThreshold.
+    };
+
+    function simpanKeDB(keyName, valueData) {
+        fetch('/update-setting', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                key: keyName,
+                value: valueData
+            })
+        })
+        .then(res => res.json())
+        .then(data => console.log("Saved " + keyName + ":", data))
+        .catch(err => console.error("Error saving " + keyName, err));
+    }
     // Event Listener tutup modal
     window.onclick = function(event) {
         var modal = document.getElementById('thresholdModal');

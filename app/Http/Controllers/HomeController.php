@@ -13,11 +13,17 @@ class HomeController extends Controller
         // Ambil data dari database
         $batasSuhu = Setting::where('key', 'batas_suhu')->first()->value ?? 24;
         $batasLembab = Setting::where('key', 'batas_lembab')->first()->value ?? 60;
+        $jadwalHari = Setting::where('key', 'jadwal_hari')->value('value') ?? '0,0,0,0,0,0,0';
+        $jadwalJam  = Setting::where('key', 'jadwal_jam')->value('value') ?? '07:00';
+
+        $arrayHari = explode(',', $jadwalHari);
 
         return view('konten.home', [
             'title' => 'Dashboard IoT',
             'batasSuhu' => $batasSuhu,     // Kirim ke View
-            'batasLembab' => $batasLembab  // Kirim ke View
+            'batasLembab' => $batasLembab,  // Kirim ke View
+            'jadwalJam'   => $jadwalJam,   // Kirim ke View
+            'arrayHari'   => $arrayHari    // Kirim ke View
         ]);
     }
 

@@ -22,11 +22,11 @@
       @forelse($notifications as $notif)
           <div class="notification-item">
             <p>{{ $notif->message }}</p>
-            {{-- Format jam: 15:30 --}}
-            <span class="time">{{ $notif->created_at->format('H:i') }}</span>
+
+            <span class="time">{{ $notif->created_at->translatedFormat('l, d F Y | H:i') }}</span>
+
           </div>
       @empty
-          {{-- Jika database kosong --}}
           <div class="notification-item" style="justify-content: center; background: #ddd; color: #555;">
             <p>Belum ada riwayat minggu ini.</p>
           </div>

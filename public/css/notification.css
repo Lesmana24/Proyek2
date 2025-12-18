@@ -11,15 +11,20 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  padding: 20px; /* Tambah padding biar gak mentok HP */
 }
 
 .container {
   background: #ffffff80;
   border-radius: 20px;
   padding: 30px;
-  width: 65%;
+  width: 100%; /* Ubah jadi 100% tapi dibatasi max-width */
+  max-width: 600px; /* Supaya di layar lebar gak kepanjangan */
   text-align: center;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  /* Tambahan agar bisa scroll kalau notif banyak */
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .back-button {
@@ -35,7 +40,7 @@ body {
 
 .title {
   color: #45842E;
-  font-size: 28px;
+  font-size: 24px; /* Kecilin dikit biar proporsional */
   font-weight: 700;
   margin-bottom: 20px;
 }
@@ -49,19 +54,43 @@ body {
 .notification-item {
   background-color: #45842E;
   color: white;
-  border-radius: 25px;
+  border-radius: 15px; /* Radius dikurangi biar gak terlalu bulat */
   width: 100%;
-  padding: 12px 18px;
+  padding: 15px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: space-between; /* Kiri kanan mentok */
+  align-items: center; /* Tengah secara vertikal */
   font-size: 14px;
   box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+  gap: 10px; /* Jarak aman antara Teks dan Tanggal */
 }
 
+/* --- PERBAIKAN UTAMA DI SINI --- */
+
+/* 1. Mengatur Teks Pesan */
+.notification-item p {
+    text-align: left;   /* Paksa rata kiri */
+    flex: 1;            /* Mengisi seluruh ruang kosong yang tersisa */
+    margin: 0;          /* Reset margin */
+    line-height: 1.2;   /* Jarak antar baris teks */
+}
+
+/* 2. Mengatur Kotak Waktu */
 .notification-item .time {
   background: rgba(255, 255, 255, 0.2);
-  padding: 4px 10px;
+  padding: 5px 10px;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 10px;      /* Kecilkan font biar muat tanggal panjang */
+  white-space: nowrap;  /* PENTING: Biar tanggal GAK turun baris */
+  flex-shrink: 0;       /* PENTING: Biar kotak tanggal GAK kegencet */
+  height: fit-content;
+}
+
+/* Tambahan untuk scrollbar yang cantik (Opsional) */
+.container::-webkit-scrollbar {
+    width: 8px;
+}
+.container::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
 }

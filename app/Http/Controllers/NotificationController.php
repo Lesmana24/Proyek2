@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Notification; // Panggil Model
+use App\Models\Notification;
 
 class NotificationController extends Controller
 {
@@ -27,5 +27,15 @@ class NotificationController extends Controller
         ]);
 
         return response()->json(['status' => 'success']);
+    }
+
+    // 3. Hapus Semua Notifikasi
+    public function deleteAll()
+    {
+        // Menghapus semua isi tabel notifications sampai bersih
+        Notification::truncate();
+
+        // Kembali ke halaman notifikasi
+        return redirect()->back();
     }
 }

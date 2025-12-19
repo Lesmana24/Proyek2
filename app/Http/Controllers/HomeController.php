@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Setting; // Jangan lupa import
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -10,7 +10,6 @@ class HomeController extends Controller
     // 1. Fungsi Menampilkan Dashboard
     public function index()
     {
-        // Ambil data dari database
         $batasSuhu = Setting::where('key', 'batas_suhu')->first()->value ?? 24;
         $batasLembab = Setting::where('key', 'batas_lembab')->first()->value ?? 60;
         $jadwalHari = Setting::where('key', 'jadwal_hari')->value('value') ?? '0,0,0,0,0,0,0';
@@ -20,20 +19,20 @@ class HomeController extends Controller
 
         return view('konten.home', [
             'title' => 'Dashboard IoT',
-            'batasSuhu' => $batasSuhu,     // Kirim ke View
-            'batasLembab' => $batasLembab,  // Kirim ke View
-            'jadwalJam'   => $jadwalJam,   // Kirim ke View
-            'arrayHari'   => $arrayHari    // Kirim ke View
+            'batasSuhu' => $batasSuhu,
+            'batasLembab' => $batasLembab,
+            'jadwalJam'   => $jadwalJam,
+            'arrayHari'   => $arrayHari
         ]);
     }
 
-    // 2. Fungsi Update Data (Dipanggil via AJAX nanti)
+    // 2. Fungsi Update Data
     public function updateSettings(Request $request)
     {
-        $key = $request->input('key');   // 'batas_suhu' atau 'batas_lembab'
+        $key = $request->input('key');
         $value = $request->input('value');
 
-        // Update Database
+    
         Setting::where('key', $key)->update(['value' => $value]);
 
         return response()->json(['status' => 'success']);

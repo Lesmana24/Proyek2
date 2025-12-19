@@ -29,11 +29,8 @@ Route::middleware('auth:pengguna')->group(function () {
 
 Route::middleware('auth:pengguna')->group(function () {
 Route::get('/notification', [NotificationController::class, 'index']);
+Route::delete('/notification/clear', [NotificationController::class, 'deleteAll'])->name('notification.clear');
 } );
-
-Route::get('/daftarJadwal',function(){
-    return view('konten.daftarJadwal');
-})->name('daftarJadwal');
 
 Route::post('/update-setting', [HomeController::class, 'updateSettings'])->name('update.setting');
 Route::post('/simpan-notif', [NotificationController::class, 'storeLog']);

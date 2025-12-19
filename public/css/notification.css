@@ -11,25 +11,35 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 20px; /* Tambah padding biar gak mentok HP */
+  padding: 20px;
+  overflow: hidden;
+}
+
+@media (max-height: 600px) {
+  body { overflow: auto; }
 }
 
 .container {
   background: #ffffff80;
   border-radius: 20px;
-  padding: 30px;
-  width: 100%; /* Ubah jadi 100% tapi dibatasi max-width */
-  max-width: 600px; /* Supaya di layar lebar gak kepanjangan */
-  text-align: center;
+  padding: 25px;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  max-height: 85vh;
+
+  display: flex;
+  flex-direction: column;
+  /* Hapus text-align center agar header bisa diatur flex */
+  /* text-align: center; */
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  /* Tambahan agar bisa scroll kalau notif banyak */
-  max-height: 90vh;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .back-button {
   text-align: left;
   margin-bottom: 10px;
+  flex-shrink: 0;
 }
 
 .back-button span {
@@ -38,59 +48,108 @@ body {
   color: #45842E;
 }
 
-.title {
-  color: #45842E;
-  font-size: 24px; /* Kecilin dikit biar proporsional */
-  font-weight: 700;
+/* === BAGIAN BARU: Header Row === */
+.header-row {
+  display: flex;
+  justify-content: space-between; /* Judul Kiri, Tombol Kanan */
+  align-items: center;
   margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
+.title {
+  color: #45842E;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0; /* Margin dihapus karena sudah diurus header-row */
+}
+
+/* Tombol Reset Merah */
+.btn-clear {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-clear:hover {
+  background-color: #c62828;
+  color: white;
+  border-color: #c62828;
+}
+
+/* === LIST NOTIFIKASI === */
 .notification-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 5px;
+  padding-bottom: 5px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 }
 
 .notification-item {
   background-color: #45842E;
   color: white;
-  border-radius: 15px; /* Radius dikurangi biar gak terlalu bulat */
+  border-radius: 12px;
   width: 100%;
   padding: 15px;
   display: flex;
-  justify-content: space-between; /* Kiri kanan mentok */
-  align-items: center; /* Tengah secara vertikal */
-  font-size: 14px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
   box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-  gap: 10px; /* Jarak aman antara Teks dan Tanggal */
+  flex-shrink: 0;
 }
 
-/* --- PERBAIKAN UTAMA DI SINI --- */
+/* Style khusus saat data kosong */
+.notification-item.empty-state {
+  background-color: #e0e0e0;
+  color: #757575;
+  align-items: center; /* Teks tengah */
+  text-align: center;
+}
 
-/* 1. Mengatur Teks Pesan */
 .notification-item p {
-    text-align: left;   /* Paksa rata kiri */
-    flex: 1;            /* Mengisi seluruh ruang kosong yang tersisa */
-    margin: 0;          /* Reset margin */
-    line-height: 1.2;   /* Jarak antar baris teks */
+    text-align: left;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+    width: 100%;
 }
 
-/* 2. Mengatur Kotak Waktu */
+/* Paksa teks tengah khusus untuk empty state */
+.notification-item.empty-state p {
+    text-align: center;
+}
+
 .notification-item .time {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 10px;      /* Kecilkan font biar muat tanggal panjang */
-  white-space: nowrap;  /* PENTING: Biar tanggal GAK turun baris */
-  flex-shrink: 0;       /* PENTING: Biar kotak tanggal GAK kegencet */
-  height: fit-content;
+  align-self: flex-end;
+  background: rgba(255, 255, 255, 0.25);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-/* Tambahan untuk scrollbar yang cantik (Opsional) */
-.container::-webkit-scrollbar {
-    width: 8px;
+/* Scrollbar Style */
+.notification-list::-webkit-scrollbar {
+    width: 6px;
 }
-.container::-webkit-scrollbar-thumb {
+.notification-list::-webkit-scrollbar-thumb {
     background-color: #ccc;
     border-radius: 4px;
+}
+.notification-list::-webkit-scrollbar-track {
+    background: transparent;
 }

@@ -103,6 +103,45 @@ Edit .env bagian DB_DATABASE, DB_USERNAME, DB_PASSWORD.
     ```
 Akses di: http://localhost:8000
 
+---
+
+## 🔌 Implementasi Hardware (ESP32 Firmware)
+
+Kode sumber lengkap (Full Code) dapat dilihat di folder [`/hardware`](./hardware).
+
+### ✨ Fitur Unggulan Firmware
+1.  **Dynamic WiFi Connect (`WiFiManager`):** Tidak perlu *hardcode* SSID/Password di kodingan. Jika gagal konek, alat akan membuat Hotspot untuk konfigurasi ulang via HP.
+2.  **OTA Control (MQTT):** Menerima perintah *threshold* dan jadwal baru secara *real-time* tanpa restart.
+3.  **Fail-Safe Logic:** Sistem proteksi pompa otomatis mati jika koneksi terputus atau timer habis.
+4.  **Dual Protocol:** Menggunakan **MQTT** untuk kontrol cepat dan **HTTP POST** untuk pelaporan data ke Laravel.
+
+### ⚙️ Konfigurasi Awal
+Sebelum upload, pastikan Library berikut terinstall di Arduino IDE:
+- `WiFiManager` by tzapu
+- `PubSubClient` (MQTT)
+- `DHT sensor library`
+- `Adafruit Unified Sensor`
+
+### 📝 Snippet Konfigurasi
+Sesuaikan variabel server di file `.ino` jika menggunakan hosting berbeda:
+
+```cpp
+// === KONFIGURASI API LARAVEL ===
+// Ganti dengan domain hosting kamu
+String serverName = "[https://proyek1d2.proyek.jti.polindra.ac.id/api/simpan-notif](https://proyek1d2.proyek.jti.polindra.ac.id/api/simpan-notif)";
+
+// === MQTT BROKER ===
+const char* mqtt_server = "broker.emqx.io";
+
+🚀 Cara Setting WiFi Pertama Kali (Tanpa Coding)
+1. Karena menggunakan WiFiManager, saat alat pertama kali dinyalakan di tempat baru:
+2. Alat akan menyebarkan Hotspot bernama IoT-Penyiraman-Config.
+3. Konek ke WiFi tersebut menggunakan HP/Laptop.
+4. Otomatis akan muncul halaman "Configure WiFi".
+5. Pilih WiFi yang tersedia (misal: WiFi Kampus/Rumah) dan masukkan Password.
+6. Klik Save, alat akan restart dan otomatis terhubung.
+7. Untuk mereset WiFi: Tekan tombol BOOT (Pin 0) pada ESP32.
+
 👨‍💻 Pengembang
 Lesmana Adhi Kusuma
 Mahasiswa D3 Teknik Informatika - Politeknik Negeri Indramayu (Polindra)

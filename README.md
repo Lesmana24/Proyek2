@@ -1,61 +1,110 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🌱 Kebun Pintar - Jondol Tani Lelea (IoT Smart Garden)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel)
+![ESP32](https://img.shields.io/badge/Hardware-ESP32-00979D?style=for-the-badge&logo=espressif)
+![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
 
-## About Laravel
+**Kebun Pintar Jondol Tani** adalah sistem monitoring dan penyiraman otomatis berbasis *Internet of Things* (IoT). Proyek ini dikembangkan untuk memantau kondisi lingkungan tanaman (Suhu & Kelembapan) secara *real-time* serta mengendalikan pompa air berdasarkan logika sensor atau jadwal yang ditentukan.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Dibangun menggunakan **Laravel 12** sebagai antarmuka web dan mikrokontroler **ESP32** sebagai pengendali perangkat keras.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 📸 Antarmuka & Dokumentasi
 
-## Learning Laravel
+### 1. Dashboard Monitoring
+Memantau kondisi tanaman secara real-time dengan indikator status perangkat (Online/Offline).
+![Dashboard Online](screenshots/dashboard.png)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 2. Implementasi Hardware
+Rangkaian ESP32, Sensor DHT22, Relay, dan Pompa dalam wadah proteksi.
+![Hardware Rangkaian](screenshots/hardware.png)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 3. Fitur Kontrol & Notifikasi
+Pengaturan ambang batas (*threshold*), jadwal mingguan, dan riwayat penyiraman.
+| Modal Setting Threshold | Notifikasi & Riwayat |
+|:-----------------------:|:--------------------:|
+| ![Modal Setting](screenshots/suhu.png) | ![Riwayat Notif](screenshots/notif.png) |
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🔥 Fitur Utama
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 🌐 Web System (Laravel 12)
+- **Real-time Monitoring:** Data suhu dan kelembapan diperbarui setiap detik via protokol MQTT/HTTP.
+- **Auto-Detection Status:** Sistem mendeteksi otomatis jika alat mati/putus koneksi (Indikator Offline).
+- **Flexible Threshold:** Pengguna bisa mengubah batas pemicu (Suhu Panas / Tanah Kering) langsung dari web tanpa coding ulang.
+- **Smart Scheduling:** Jadwal penyiraman otomatis berbasis hari dan jam.
+- **Log History:** Mencatat setiap aktivitas penyiraman beserta pemicunya (Sensor/Jadwal) dengan fitur *Reset Data*.
 
-### Premium Partners
+### 🤖 Hardware Logic (ESP32)
+- **Compound Logic:** Penyiraman otomatis hanya terjadi jika kondisi Kritis (**Suhu > Batas** DAN **Lembab < Batas**).
+- **State Memory:** Mengingat penyebab penyiraman terakhir untuk pelaporan data yang akurat.
+- **Fail-Safe Timer:** Proteksi durasi penyiraman agar pompa tidak menyala terus-menerus.
+- **Local Alert:** Buzzer berbunyi saat penyiraman aktif sebagai indikator fisik.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 🛠️ Spesifikasi Teknis
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Perangkat Lunak (*Software Stack*)
+- **Framework:** Laravel 12 (PHP 8.2+)
+- **Database:** MySQL / MariaDB
+- **Frontend:** Blade Templating, Tailwind CSS, Vite
+- **Server:** Apache/Nginx (Support Hosting aaPanel/cPanel)
 
-## Code of Conduct
+### Perangkat Keras (*Hardware Pinout*)
+Mapping pin pada **ESP32 DevKit V1**:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Komponen | Tipe | Pin GPIO | Keterangan |
+| :--- | :--- | :--- | :--- |
+| **DHT22** | Input | `GPIO 26` | Sensor Suhu & Kelembapan |
+| **Relay Module** | Output | `GPIO 14` | Trigger Pompa Air (Active Low) |
+| **Buzzer** | Output | `GPIO 25` | Alarm Notifikasi |
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🚀 Cara Instalasi (Web Server)
 
-## License
+Ikuti langkah ini untuk menjalankan server lokal:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/Lesmana24/Proyek2
+   cd kebun-pintar-jondol
+   ```
+
+2. **Install Dependencies**
+    ```bash
+    composer install
+    npm install
+    ```
+
+3. **Konfigurasi Environment Salin file .env dan sesuaikan database.**
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
+Edit .env bagian DB_DATABASE, DB_USERNAME, DB_PASSWORD.
+
+4. **Build Assets**
+    ```bash
+    npm run build
+    ```
+
+5. **Migrasi Database**
+    ```bash
+    php artisan migrate
+    ```
+
+6. **Jalankan Server**
+    ```bash
+    php artisan serve
+    ```
+Akses di: http://localhost:8000
+
+👨‍💻 Pengembang
+Lesmana Adhi Kusuma
+Mahasiswa D3 Teknik Informatika - Politeknik Negeri Indramayu (Polindra)
+
+Mata Kuliah Proyek 2: Implementasi Laravel dan Integrasi dengan IoT

@@ -132,6 +132,7 @@ String serverName = "[https://proyek1d2.proyek.jti.polindra.ac.id/api/simpan-not
 
 // === MQTT BROKER ===
 const char* mqtt_server = "broker.emqx.io";
+```
 
 🚀 Cara Setting WiFi Pertama Kali (Tanpa Coding)
 1. Karena menggunakan WiFiManager, saat alat pertama kali dinyalakan di tempat baru:

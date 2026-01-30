@@ -1,6 +1,6 @@
 # 🌱 Kebun Pintar - Jondol Tani Lelea (IoT Smart Garden)
 
-![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel)
+![Laravel](https://img.shields.io/badge/Laravel-12.0-FF2D20?style=for-the-badge&logo=laravel)
 ![ESP32](https://img.shields.io/badge/Hardware-ESP32-00979D?style=for-the-badge&logo=espressif)
 ![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
 
